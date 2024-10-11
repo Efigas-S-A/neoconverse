@@ -1,0 +1,10 @@
+numpy
+neo4j
+pandas
+streamlit
+openpyxl
+xlsxwriter
+openai 
+langchain 
+langchain_openai
+langchain_community

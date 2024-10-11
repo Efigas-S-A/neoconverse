@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-
 import CodeMirror from '@uiw/react-codemirror';
 import { cypher as CypherMode } from "@codemirror/legacy-modes/mode/cypher";
 import { StreamLanguage } from "@codemirror/language";
