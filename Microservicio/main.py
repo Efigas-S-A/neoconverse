@@ -169,8 +169,8 @@ async def read_root(file: UploadFile = File(...)):
         df=pd.read_excel(file.file)
     else:
         return JSONResponse(status_code=400, content={"message": "File format not supported"})
-    conn=conexion()
     
+    conn=conexion()
     print("informacion del archivo :",df.info())
     id_contratos=df['CONTRATO INICIAL'].dropna().copy().unique()
     id_contratos=tuple(id_contratos.astype(int).astype(str))
@@ -182,16 +182,11 @@ async def read_root(file: UploadFile = File(...)):
     print("informacion de contratos procesada :",Contracts)
 
      #### CREAMOS LOS CLIENTES
-    # createOrUpdateClients(clients,'neo4j')
     createOrUpdateContract(Contracts,'neo4j')
-    
-    #  ##### CREAMOS LOS CONTRATOS
-    #  for start in range(0, len(Contracts)):
-    #          batch_df = Contracts.iloc[start:start ]
-    #          # Convertir el lote en un diccionario de registros
-    #          batch = batch_df.to_dict(orient='records')
-            
-    #          createOrUpdateContract(batch,database)
+
+    # # ##### CREAMOS LOS CONTRATOS
+    createOrUpdateClients(clients,'neo4j')
+
 
     #  ### CREAMOS LOS DEPARTAMENTOS
     #  for start in range(0, len(valores_unicos_departamento)):

@@ -8,3 +8,5 @@ openai
 langchain 
 langchain_openai
 langchain_community
+fastapi[standard]
+pyodbc

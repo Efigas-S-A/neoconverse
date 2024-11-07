@@ -251,20 +251,19 @@ def generateLinksProvedor(database,batch):
 
 def createOrUpdateContract(batch,database):
     ### LEEMOS LAS CREDENCIALES DE LA BASE DE DATOS.
-    URI_NEO4J =  os.getenv('URI_NEO4J')
-    USER_NEO4J = os.getenv('USER_NEO4J')
+    URI_NEO4J =  os.getenv('URI_NEO4J_V2')
+    USER_NEO4J = os.getenv('USER_NEO4J_V2')
     PASSWORD_NEO4J = os.getenv('PASSWORD_NEO4J')
     print(PASSWORD_NEO4J,URI_NEO4J,USER_NEO4J)
     ### GENERAMOS LA CONEXIÓN A LA BASE DE DATOS
     with GraphDatabase.driver(URI_NEO4J, auth=(USER_NEO4J,PASSWORD_NEO4J)) as driver:
         driver.verify_connectivity()
         print("CREANDO CONTRATOS")
-        # Get the name of all 42 year-olds
         Query = """
         UNWIND $batch as row
         MERGE (n:Contrato {BK_SUSCCODI: row.BK_SUSCCODI})
-        WITH n, row  // Carry forward the 'n' node and the current row for further operations
-        MATCH (f:Fraude {id:1})  // Assuming each row may specify which Fraude it relates to
+        WITH n, row  
+        MATCH (f:Fraude {id:1})  
         MERGE (n)-[r:Presento_Fraude]->(f)
         """
         records, summary, keys = driver.execute_query(
@@ -535,7 +534,7 @@ def generateLinksCategoryAndSubCategory(dataframe,database):
     with GraphDatabase.driver(URI_NEO4J_V22, auth=(USER_NEO4J_V2,PASSWORD_NEO4J_V2)) as driver:
         driver.verify_connectivity()
         print("Connection estabilished.")
-        # Get the name of all 42 year-olds
+
         for index, row in dataframe.iterrows():
             SELECT_PRODUCT = row['BK_PRODUCT_ID']
             SELECT_CATEGORY = row['CATEGORY_ID']

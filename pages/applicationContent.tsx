@@ -371,6 +371,7 @@ const ApplicationContent: NextPage = () => {
         respondWithChart,
         llmKey
       );
+      console.log("Respuesta final", finalResponse);
       let finalMessage = "";
       if (!respondWithChart) {
         const reader = finalResponse?.body?.getReader();
@@ -564,7 +565,6 @@ const ApplicationContent: NextPage = () => {
               ></Chat>
             </Grid>
           </Grid>
-
         </div>
       </main>
     </div>
