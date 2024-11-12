@@ -1,46 +1,44 @@
-
-const GRACEFUL_MESSAGE_PROMPT = 
-`Articulate that you couldnt find any relevant information for the request, may be you are not yet to trained to handle this request, 
+const GRACEFUL_MESSAGE_PROMPT = `Articulate that you couldnt find any relevant information for the request, may be you are not yet to trained to handle this request, 
 but you are continously improving and ask user to try ask the question differently'
 `;
 
-const GRACEFUL_HUGE_TEXT_PROMPT = 'Articulate that the response is huge text and cannot be responded here, please ask for specific questions';
+const GRACEFUL_HUGE_TEXT_PROMPT =
+  "Articulate that the response is huge text and cannot be responded here, please ask for specific questions";
 
-const GRACEFUL_CHART_FAILURE_PROMPT = "Sorry, i'm not trained yet to help charting this request, please contact your admin to train me with more samples"
+const GRACEFUL_CHART_FAILURE_PROMPT =
+  "Sorry, i'm not trained yet to help charting this request, please contact your admin to train me with more samples";
 
 function HUMAN_READABLE_MESSAGE_PROMPT(question: string, answer: string) {
+  // const prompt = `
+  // You are tasked to streamline the conversion of json data into human readable format:
+  // Instructions:
+  // Below are several examples that illustrate how to transform queries and their JSON responses into easily understandable formats, as detailed within <examples> XML tags.
+  // Do not include Human-readable Output as part of your response.
+  // Example Transformation:
+  // <example>
+  //     Question: Get distinct watch terms?
+  //     JSON Response: [\"alert\",\"attorney\",\"bad\",\"canceled\",\"charge\"]
+  //     Human-readable Output:
+  //     Here are the distinct _watch terms_:
+  //         -alert
+  //         -attorney
+  //         -bad
+  //         -canceled
+  //         -charge
+  // <example>
 
-// const prompt = `
-// You are tasked to streamline the conversion of json data into human readable format:
-// Instructions:
-// Below are several examples that illustrate how to transform queries and their JSON responses into easily understandable formats, as detailed within <examples> XML tags.
-// Do not include Human-readable Output as part of your response. 
-// Example Transformation:
-// <example>
-//     Question: Get distinct watch terms?
-//     JSON Response: [\"alert\",\"attorney\",\"bad\",\"canceled\",\"charge\"]
-//     Human-readable Output:
-//     Here are the distinct _watch terms_:
-//         -alert
-//         -attorney
-//         -bad
-//         -canceled
-//         -charge
-// <example>
+  // Given the pattern illustrated in the example above, you are tasked with producing a human-readable format for the following input:
 
-// Given the pattern illustrated in the example above, you are tasked with producing a human-readable format for the following input:
+  // Question: ${question}
+  // JSON Response: ${answer}
+  // Human-readable Output:
+  // Your Objective: Format the provided data into a reader-friendly list.
+  // Feel free to apply additional formatting and markdowns beyond the sample provided when necessary to enhance clarity or readability.
+  // Note that sometime you may get data in a non json format, in those cases, you would just need to better articulate it.
+  // `
+  //     return prompt
 
-// Question: ${question}
-// JSON Response: ${answer}
-// Human-readable Output:
-// Your Objective: Format the provided data into a reader-friendly list. 
-// Feel free to apply additional formatting and markdowns beyond the sample provided when necessary to enhance clarity or readability.
-// Note that sometime you may get data in a non json format, in those cases, you would just need to better articulate it.
-// `
-//     return prompt
-
-const prompt = 
-`
+  const prompt = `
 Task Overview: Your mission is to convert data, primarily in JSON format, from a structured query response into a format that is easily readable by humans. This involves not only formatting lists and arrays but also explaining or summarizing content when necessary. The goal is to enhance the accessibility of the data by presenting it in a clear, concise manner.
 
 Instructions:
@@ -58,17 +56,16 @@ Here are the distinct watch terms:
     - bad
     - canceled
     - charge
-Your Objective: Given the input in the form of a question (${question}) and its response (${answer}), produce a human-readable summary or list that effectively communicates the information to a lay audience. Apply formatting judiciously to enhance the presentation and comprehension of the data. 
+Your Objective: Given the input in the form of a question (${question}) and its response (${answer}), produce a human-readable summary or list that effectively communicates the information to a lay audience in spanish. Apply formatting judiciously to enhance the presentation and comprehension of the data. 
 Do not use header formating with #, ##, ### in the markdown.
 Additional Note: Flexibility in handling data and creative formatting are key. Always aim for clarity and accessibility in your output. 
 Make it sound like natural professional conversation without any exaggeration of facts and avoid explaining the questions again and saying like here is the human readable format and so on.
-`
-return prompt
+`;
+  return prompt;
 }
 
-function CHART_GENERATION_PROMPT(question:string, data:string)
-{
-    const prompt =`
+function CHART_GENERATION_PROMPT(question: string, data: string) {
+  const prompt = `
     You are a helpful assistant in developing charts using apache echart
     Write code of getting options for apache echart for below input data \n
     Provide chart options for apache echart that can be used to create dynamic chart element using React.createElement to chart below data set provided inside <dataset> xml tag, 
@@ -81,25 +78,30 @@ function CHART_GENERATION_PROMPT(question:string, data:string)
     <dataset> ${data} </dataset>
 
     const option = 
-    `
-    return prompt
+    `;
+  return prompt;
 }
 
-function CYPHER_GENERATION_PROMPT(schema:string, fewshot:string, historyOfConversation:string, userQuestion:string)
-{
-    const fewshotSection = fewshot && fewshot.trim() !== "" ?
-        `<FewShotExamples>
+function CYPHER_GENERATION_PROMPT(
+  schema: string,
+  fewshot: string,
+  historyOfConversation: string,
+  userQuestion: string
+) {
+  const fewshotSection =
+    fewshot && fewshot.trim() !== ""
+      ? `<FewShotExamples>
         ${fewshot}
         </FewShotExamples>`
-        : '';
-    const historyOfConversationSection = historyOfConversation && historyOfConversation.trim() !== "" ?
-        `<HistoryOfConversation>
+      : "";
+  const historyOfConversationSection =
+    historyOfConversation && historyOfConversation.trim() !== ""
+      ? `<HistoryOfConversation>
             ${historyOfConversation}
         </HistoryOfConversation>`
-        : '';
-    
-    const template = 
-`
+      : "";
+
+  const template = `
 As a specialized tool designed exclusively for generating Neo4j Cypher queries, your function is to directly translate natural language inquiries into precise and executable Cypher queries.  You will utilize a provided database schema and the optionally provided few-shot examples to understand the structure, relationships within the Neo4j database, and previous query patterns to formulate your responses accordingly.
 
 Instructions:
@@ -134,11 +136,15 @@ With all the above information and instructions, Generate cypher query for the u
 <UserQuestion>
 ${userQuestion}
 </UserQuestion>
-`
-    return template;
+`;
+  return template;
 }
 
 export {
-    GRACEFUL_MESSAGE_PROMPT, GRACEFUL_HUGE_TEXT_PROMPT, GRACEFUL_CHART_FAILURE_PROMPT, 
-    HUMAN_READABLE_MESSAGE_PROMPT, CHART_GENERATION_PROMPT, CYPHER_GENERATION_PROMPT
-}
+  GRACEFUL_MESSAGE_PROMPT,
+  GRACEFUL_HUGE_TEXT_PROMPT,
+  GRACEFUL_CHART_FAILURE_PROMPT,
+  HUMAN_READABLE_MESSAGE_PROMPT,
+  CHART_GENERATION_PROMPT,
+  CYPHER_GENERATION_PROMPT,
+};
